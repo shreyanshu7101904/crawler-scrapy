@@ -1,14 +1,31 @@
 import scrapy
 from bs4 import BeautifulSoup
 import json
+import pymongo
 from scrapy.selector import Selector
+from pymongo import MongoClient
+client_db = MongoClient("mongodb://test:7101904a@ds157723.mlab.com:57723/shreyanshu")
+
 
 class GetData(scrapy.Spider):
     name = "geturldata"
+
     def start_requests(self):
-        urls = 'https://www.getmyuni.com/engineering-colleges'
- 
-        yield scrapy.Request(url=urls, callback=self.parse)
+        urls = 'https://www.getmyuni.com/engineering-colleges' 
+        yield scrapy.Request(url = urls, callback = self.parse)
+
+
+    def pushDataToDb(self, values):        
+        print(client_db['shreyanshu'].list_collection_names())
+        collection = client_db["shreyanshu"].scraper
+        try:
+            res = collection.insert_one(values).inserted_id
+            print(res)
+        except Exception as e :
+            print("key already exists")
+            pass
+        
+
 
     def parse(self, response):
         data = response.body
@@ -108,9 +125,9 @@ class GetData(scrapy.Spider):
                                 values["Review_link"] = link.find_all("a", class_ = "menu-menu-items-a")[5].get('href')
                         except Exception as e:
                             pass
-                print(values)
+                #print(values)
 
-
+                self.pushDataToDb(values)
                 print("###################")
 
 
