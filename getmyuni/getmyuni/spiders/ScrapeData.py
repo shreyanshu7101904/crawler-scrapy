@@ -8,7 +8,7 @@ client_db = MongoClient("mongodb://test:7101904a@ds157723.mlab.com:57723/shreyan
 
 
 class GetData(scrapy.Spider):
-    name = "geturldata"
+    name = "ScrapeData"
 
     def start_requests(self):
         urls = 'https://www.getmyuni.com/engineering-colleges' 
@@ -16,7 +16,6 @@ class GetData(scrapy.Spider):
 
 
     def pushDataToDb(self, values):        
-        print(client_db['shreyanshu'].list_collection_names())
         collection = client_db["shreyanshu"].scraper
         try:
             res = collection.insert_one(values).inserted_id
