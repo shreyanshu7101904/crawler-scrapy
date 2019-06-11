@@ -77,8 +77,38 @@ class GetData(scrapy.Spider):
                 #print(feeAndExam.find_all('div'))
                 if len(feeAndExam.find_all('div')) > 1:
                     values["Fees"] = feeAndExam.find_all('div')[1].contents[1]
-
-                    print(feeAndExam.find_all('div')[0].contents[2])
+                    values["ExamLinks"] = BeautifulSoup(str(feeAndExam.find_all('div')[0].contents[2])).find('a').get('href')
+                    values["ExamName"] = BeautifulSoup(str(feeAndExam.find_all('div')[0].contents[2])).find('a').get_text()
+                    #print(values)
+                else:
+                    values["Fees"] = feeAndExam.find_all('div')[0].contents[1].strip()
+                    #print(values)
+                #text-center card-icon-div
+                links = soup.find_all('div', class_ = ["text-center", "card-icon-div"])
+                #print(links)
+                for link in links:
+                    #print(len(link))
+                    #PLACEMENTS = 1
+                    #print(link.find_all('a')[0].get('href'))
+                    #print(len(link.find_all("a", class_ = "menu-menu-items-a")))
+                    if len(link.find_all("a", class_ = "menu-menu-items-a")) > 0:
+                        #print(link.find_all("a", class_ = "menu-menu-items-a")[1])
+                        try:
+                            if link.find_all("a", class_ = "menu-menu-items-a")[0].get('href'):
+                                values["Info_link"] = link.find_all("a", class_ = "menu-menu-items-a")[0].get('href')
+                            if link.find_all("a", class_ = "menu-menu-items-a")[1].get('href'):
+                                values["Placements_link"] = link.find_all("a", class_ = "menu-menu-items-a")[1].get('href')
+                            if link.find_all("a", class_ = "menu-menu-items-a")[2].get('href'):
+                                values["FeeandCourses_link"] = link.find_all("a", class_ = "menu-menu-items-a")[2].get('href')
+                            if link.find_all("a", class_ = "menu-menu-items-a")[3].get('href'):
+                                values["Infrastructure_link"] = link.find_all("a", class_ = "menu-menu-items-a")[3].get('href')
+                            if link.find_all("a", class_ = "menu-menu-items-a")[4].get('href'):
+                                values["Addmision_link"] = link.find_all("a", class_ = "menu-menu-items-a")[4].get('href')
+                            if link.find_all("a", class_ = "menu-menu-items-a")[5].get('href'):
+                                values["Review_link"] = link.find_all("a", class_ = "menu-menu-items-a")[5].get('href')
+                        except Exception as e:
+                            pass
+                print(values)
 
 
                 print("###################")
